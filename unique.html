@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<script src = "db2.json"></script>
+<head>
+Select Bus ID<br>
+</head>
+<body>
+<select id = "mySelect"></select>
+<script>
+
+var myList = [];
+function getID(item){return item.id}
+var busID = mydata.vehicles.map(getID);
+busID.forEach(function(bus){
+    if(myList.includes(bus)){myList}
+    else{myList.push(bus)};
+})
+
+for (i=0; i < myList.length; i++){
+    var element = document.createElement("OPTION");
+    element.innerHTML = myList[i];
+    document.getElementById('mySelect').append(element);
+};
+</script>
+</body>
+</html>
