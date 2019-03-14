@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<script src = "db2.json"></script>
+<head>
+Select Bus ID<br>
+</head>
+<body>
+<select id = "mySelect" onchange="displayNewInfo()"></select>
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyARxs_0QWBQzZ-7tnFIkcz6Tzh5Fr1I0xg"></script>
+<div id="map" style="width: 640px; height: 480px"></div>
+<div id = "busInfo"></div>
+<script>
+
+//getting IDs and putting them in array
+function getID(item){return item.id}
+var busID = mydata.vehicles.map(getID);
+var myList = [];
+busID.forEach(function(bus){
+    if(myList.includes(bus)){myList}
+    else{myList.push(bus)};
+})
+
+//create dropdown options from array of IDs
+for (i=0; i < myList.length; i++){
+    var element = document.createElement("option");
+    element.innerHTML = myList[i];
+    document.getElementById('mySelect').append(element);
+}
+
+//my init
+function init(){
+    var latlng = new google.maps.LatLng(42.350000, -71.090009);
+	var myOptions = {
+		zoom : 14,
+		center : latlng,
+		mapTypeId : google.maps.MapTypeId.ROADMAP
+	};
+    map = new google.maps.Map(document.getElementById('map'), myOptions);
+    displayNewInfo();
+};
+
+//when clicking on new ID from dropdown, clear previous markers AND display info under the map
+var markersList = [];
+function displayNewInfo(){
+    var selectedbusID = document.getElementById("mySelect")
+                .options[document.getElementById("mySelect").selectedIndex]
+                .value;
+    var busInfo = [];
+    mydata.vehicles.forEach(function(bus){
+        if(bus.id === selectedbusID){busInfo.push(bus)}
+    });
+    clearMap();
+    busInfo.forEach(function(bus){
+	    var marker = new google.maps.Marker({
+            position: {lat: bus.latitude, lng: bus.longitude},
+            map: map,
+            icon: 'red.png',
+            id: bus.id
+	    });
+        markersList.push(marker);
+    });
+    document.getElementById("busInfo").innerHTML = JSON.stringify(busInfo);
+};
+
+//function to clear markers from previous ID map
+function clearMap() {
+    for (var i=0; i < markersList.length; i++) {markersList[i].setMap(null)};
+};
+
+//load
+google.maps.event.addDomListener(window,'load',init);
+</script>
+</body>
+</html>
